@@ -4,3 +4,5 @@ PySide6_Essentials==6.11.0
 shiboken6==6.11.0
 pytest
 pytest-qt
+platformdirs
+pyinstaller

@@ -8,6 +8,8 @@ import threading
 import logging
 from typing import Optional
 
+from utils.app_path import get_resource_path
+
 logger = logging.getLogger(__name__)
 
 class AlertService:
@@ -31,12 +33,8 @@ class AlertService:
             AlertService._sound_loaded = True
     
     def _setup_sound(self):
-        """Setup sound based on platform."""
         self._system = platform.system()
-        
-        resources_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resources")
-        self._alert_path = os.path.join(resources_dir, "alert.wav")
-        
+        self._alert_path = get_resource_path("resources/alert.wav")
         self._has_alert = os.path.exists(self._alert_path)
     
     def play_alert(self, async_play: bool = True):
@@ -131,16 +129,12 @@ class AlertService:
     
     @staticmethod
     def check_alert_exists() -> bool:
-        """Check if alert sound file exists."""
-        resources_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resources")
-        alert_path = os.path.join(resources_dir, "alert.wav")
+        alert_path = get_resource_path("resources/alert.wav")
         return os.path.exists(alert_path)
-    
+
     @staticmethod
     def get_alert_path() -> Optional[str]:
-        """Get the alert sound file path."""
-        resources_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resources")
-        alert_path = os.path.join(resources_dir, "alert.wav")
+        alert_path = get_resource_path("resources/alert.wav")
         if os.path.exists(alert_path):
             return alert_path
         return None

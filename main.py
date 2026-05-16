@@ -9,12 +9,14 @@ from PySide6.QtCore import QLockFile, QStandardPaths
 from db import init_database, close_connection
 from services import SessionService
 from ui.main_window import MainWindow
+from utils.app_path import get_data_path
 
+log_file = get_data_path("pscafe.log")
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        RotatingFileHandler('pscafe.log', maxBytes=5*1024*1024, backupCount=3),
+        RotatingFileHandler(log_file, maxBytes=5*1024*1024, backupCount=3),
         logging.StreamHandler()
     ]
 )
