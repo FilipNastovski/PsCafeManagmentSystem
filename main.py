@@ -4,7 +4,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 from PySide6.QtWidgets import QApplication, QMessageBox
-from PySide6.QtCore import Qt, QLockFile, QStandardPaths
+from PySide6.QtCore import QLockFile, QStandardPaths
 
 from db import init_database, close_connection
 from services import SessionService

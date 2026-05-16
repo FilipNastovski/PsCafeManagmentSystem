@@ -15,6 +15,24 @@ DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 
 _local = threading.local()
 
+
+def set_db_path(path: str):
+    """Override DB path (for testing)."""
+    global DB_PATH
+    DB_PATH = path
+
+
+def reset_connection():
+    """Clear thread-local connection (for testing between tests)."""
+    global _local
+    if hasattr(_local, 'connection') and _local.connection:
+        try:
+            _local.connection.close()
+        except Exception:
+            pass
+        _local.connection = None
+
+
 def get_db_path() -> str:
     """Get the database file path."""
     return DB_PATH
