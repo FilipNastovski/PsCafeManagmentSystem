@@ -9,9 +9,11 @@ import logging
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
+from utils.app_path import get_data_path
+
 logger = logging.getLogger(__name__)
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "pscafe.db")
+DB_PATH = get_data_path("pscafe.db")
 
 _local = threading.local()
 

@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (QDialog, QWidget, QVBoxLayout, QHBoxLayout,
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
 
+from utils.app_path import get_resource_path
 from services import PricingService, SessionService
 from db import get_device
 
@@ -25,7 +26,7 @@ class SessionStartDialog(QDialog):
         self._duration = 0
         self._setup_ui()
         
-        icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resources", "icon.png")
+        icon_path = get_resource_path("resources/icon.png")
         if os.path.exists(icon_path):
             from PySide6.QtGui import QIcon
             self.setWindowIcon(QIcon(icon_path))

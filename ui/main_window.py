@@ -14,6 +14,8 @@ import traceback
 from datetime import datetime
 from typing import Dict, Any
 
+from utils.app_path import get_resource_path
+
 logger = logging.getLogger(__name__)
 
 from db import get_all_devices, get_device, init_database
@@ -329,7 +331,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("PlayStation Management")
         self.setMinimumSize(QSize(900, 600))
         
-        icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resources", "icon.png")
+        icon_path = get_resource_path("resources/icon.png")
         if os.path.exists(icon_path):
             from PySide6.QtGui import QIcon
             self.setWindowIcon(QIcon(icon_path))
