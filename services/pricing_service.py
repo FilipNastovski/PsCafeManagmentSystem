@@ -60,7 +60,7 @@ class PricingService:
         """
         start = datetime.fromisoformat(start_time)
         elapsed = datetime.now() - start
-        minutes = elapsed.total_seconds() / 60
+        minutes = int(elapsed.total_seconds() / 60)
         return PricingService.calculate_price(price_per_hour, minutes)
     
     @staticmethod
