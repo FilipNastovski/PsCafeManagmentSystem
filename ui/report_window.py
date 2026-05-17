@@ -10,6 +10,7 @@ from PySide6.QtCore import Qt, QDate, QSize
 from PySide6.QtGui import QFont
 
 from utils.app_path import get_resource_path
+from utils.theme import style
 from services import ReportService, PricingService
 from db import get_all_devices
 
@@ -39,7 +40,7 @@ class SessionCard(QFrame):
         
         self.setStyleSheet("""
             SessionCard {
-                background-color: #263238;
+                background-color: palette(base);
                 border-left: 3px solid """ + border_color + """;
                 border-radius: 6px;
                 padding: 10px;
@@ -56,7 +57,7 @@ class SessionCard(QFrame):
         font = QFont("Arial", 12)
         font.setBold(True)
         device_label.setFont(font)
-        device_label.setStyleSheet("color: #ffffff;")
+        device_label.setStyleSheet("color: palette(text);")
         header_layout.addWidget(device_label)
         
         header_layout.addStretch()
@@ -72,7 +73,7 @@ class SessionCard(QFrame):
         
         type_label = QLabel(f"{self._session.get('session_type', 'N/A').capitalize()} Session")
         type_label.setFont(QFont("Arial", 10))
-        type_label.setStyleSheet("color: #B0BEC5;")
+        type_label.setStyleSheet(style("text_muted"))
         layout.addWidget(type_label)
         
         time_layout = QHBoxLayout()
@@ -85,7 +86,7 @@ class SessionCard(QFrame):
             time_label = QLabel(f"Started: {start}")
         
         time_label.setFont(QFont("Arial", 9))
-        time_label.setStyleSheet("color: #90A4AE;")
+        time_label.setStyleSheet(style("text_muted"))
         time_layout.addWidget(time_label)
         
         time_layout.addStretch()
@@ -103,7 +104,7 @@ class SessionCard(QFrame):
             f"Duration: {PricingService.format_duration(self._session.get('billed_minutes', 0))}"
         )
         duration_label.setFont(QFont("Arial", 9))
-        duration_label.setStyleSheet("color: #78909C;")
+        duration_label.setStyleSheet(style("text_muted"))
         layout.addWidget(duration_label)
 
 
@@ -136,7 +137,7 @@ class ReportWindow(QMainWindow):
         font = QFont("Arial", 20)
         font.setBold(True)
         header.setFont(font)
-        header.setStyleSheet("color: #ECEFF1;")
+        header.setStyleSheet("color: palette(text);")
         main_layout.addWidget(header)
         
         filters = self._create_filters()
@@ -149,16 +150,16 @@ class ReportWindow(QMainWindow):
         font = QFont("Arial", 14)
         font.setBold(True)
         sessions_label.setFont(font)
-        sessions_label.setStyleSheet("color: #B0BEC5;")
+        sessions_label.setStyleSheet(style("text_muted"))
         main_layout.addWidget(sessions_label)
         
         self._scroll = QScrollArea()
         self._scroll.setWidgetResizable(True)
         self._scroll.setStyleSheet("""
             QScrollArea {
-                border: 1px solid #37474f;
+                border: 1px solid palette(mid);
                 border-radius: 8px;
-                background-color: #1E272C;
+                background-color: palette(window);
             }
         """)
         
@@ -174,7 +175,7 @@ class ReportWindow(QMainWindow):
         filters = QWidget()
         filters.setStyleSheet("""
             QWidget {
-                background-color: #263238;
+                background-color: palette(base);
                 border-radius: 8px;
                 padding: 12px;
             }
@@ -193,9 +194,9 @@ class ReportWindow(QMainWindow):
                 padding: 8px;
                 font-size: 12px;
                 min-width: 100px;
-                background-color: #37474F;
-                color: white;
-                border: none;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
                 border-radius: 4px;
             }
         """)
@@ -203,7 +204,7 @@ class ReportWindow(QMainWindow):
         layout.addWidget(self._period_combo)
         
         self._start_date_label = QLabel("From:")
-        self._start_date_label.setStyleSheet("color: #B0BEC5;")
+        self._start_date_label.setStyleSheet(style("text_muted"))
         self._start_date_label.setVisible(False)
         layout.addWidget(self._start_date_label)
         
@@ -214,16 +215,16 @@ class ReportWindow(QMainWindow):
         self._start_date.setStyleSheet("""
             QDateEdit {
                 padding: 6px;
-                background-color: #37474F;
-                color: white;
-                border: none;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
                 border-radius: 4px;
             }
         """)
         layout.addWidget(self._start_date)
         
         self._end_date_label = QLabel("To:")
-        self._end_date_label.setStyleSheet("color: #B0BEC5;")
+        self._end_date_label.setStyleSheet(style("text_muted"))
         self._end_date_label.setVisible(False)
         layout.addWidget(self._end_date_label)
         
@@ -234,9 +235,9 @@ class ReportWindow(QMainWindow):
         self._end_date.setStyleSheet("""
             QDateEdit {
                 padding: 6px;
-                background-color: #37474F;
-                color: white;
-                border: none;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
                 border-radius: 4px;
             }
         """)
@@ -255,9 +256,9 @@ class ReportWindow(QMainWindow):
                 padding: 8px;
                 font-size: 12px;
                 min-width: 100px;
-                background-color: #37474F;
-                color: white;
-                border: none;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
                 border-radius: 4px;
             }
         """)
@@ -291,7 +292,7 @@ class ReportWindow(QMainWindow):
         summary = QWidget()
         summary.setStyleSheet("""
             QWidget {
-                background-color: #263238;
+                background-color: palette(base);
                 border-radius: 8px;
                 padding: 15px;
             }
@@ -314,7 +315,7 @@ class ReportWindow(QMainWindow):
             
             lbl = QLabel(label)
             lbl.setFont(QFont("Arial", 10))
-            lbl.setStyleSheet("color: #78909C;")
+            lbl.setStyleSheet(style("text_muted"))
             layout.addWidget(lbl, row * 2, col)
             
             if label == "Most Used":
@@ -389,6 +390,6 @@ class ReportWindow(QMainWindow):
         if not sessions:
             no_sessions = QLabel("No sessions found for this period.")
             no_sessions.setFont(QFont("Arial", 12))
-            no_sessions.setStyleSheet("color: #78909C; padding: 20px;")
+            no_sessions.setStyleSheet(style("text_muted", extra="padding: 20px;"))
             no_sessions.setAlignment(Qt.AlignCenter)
             self._sessions_grid.addWidget(no_sessions, 0, 0, 1, 2)

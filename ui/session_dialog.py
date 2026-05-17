@@ -11,6 +11,7 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
 
 from utils.app_path import get_resource_path
+from utils.theme import style
 from services import PricingService, SessionService
 from db import get_device
 
@@ -47,7 +48,7 @@ class SessionStartDialog(QDialog):
         
         price_info = QLabel(f"Rate: {PricingService.format_price(self._device['price_per_hour'])}/hour")
         price_info.setFont(QFont("Arial", 12))
-        price_info.setStyleSheet("color: #666;")
+        price_info.setStyleSheet(style("text_muted"))
         layout.addWidget(price_info)
         
         layout.addSpacing(10)
@@ -74,6 +75,10 @@ class SessionStartDialog(QDialog):
             QSpinBox {
                 padding: 5px;
                 font-size: 12px;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
+                border-radius: 4px;
             }
         """)
         self._duration_spin.valueChanged.connect(self._on_duration_changed)
@@ -103,12 +108,12 @@ class SessionStartDialog(QDialog):
         
         open_info = QLabel("Session stays active until manually ended.")
         open_info.setFont(QFont("Arial", 10))
-        open_info.setStyleSheet("color: #666;")
+        open_info.setStyleSheet(style("text_muted"))
         open_layout.addWidget(open_info)
         
         open_price_info = QLabel("Price: Live calculation based on actual time used")
         open_price_info.setFont(QFont("Arial", 10))
-        open_price_info.setStyleSheet("color: #666;")
+        open_price_info.setStyleSheet(style("text_muted"))
         open_layout.addWidget(open_price_info)
         
         layout.addWidget(open_options)

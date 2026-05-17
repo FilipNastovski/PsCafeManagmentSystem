@@ -5,6 +5,7 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
 
 from utils.app_path import get_resource_path
+from utils.theme import style
 from services import PricingService
 
 
@@ -24,7 +25,7 @@ class EndSessionDialog(QDialog):
         device_name = self._session.get('device_name', 'N/A')
         self.setWindowTitle(f"End Session - {device_name}")
         self.setMinimumSize(QSize(450, 420))
-        self.setStyleSheet("QDialog { background-color: #1E272C; } QLabel { color: #ECEFF1; }")
+        self.setStyleSheet("QDialog { background-color: palette(window); } QLabel { color: palette(text); }")
         
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -34,12 +35,12 @@ class EndSessionDialog(QDialog):
         font = QFont("Arial", 16)
         font.setBold(True)
         header.setFont(font)
-        header.setStyleSheet("color: #ECEFF1;")
+        header.setStyleSheet("color: palette(text);")
         header.setAlignment(Qt.AlignCenter)
         layout.addWidget(header)
         
         summary_box = QFrame()
-        summary_box.setStyleSheet("QFrame { background-color: #263238; border-radius: 8px; border: 1px solid #37474F; }")
+        summary_box.setStyleSheet("QFrame { background-color: palette(base); border-radius: 8px; border: 1px solid palette(mid); }")
         summary_box.setMinimumHeight(300 if self._session.get('session_type') == 'timed' else 200)
 
         gl = QGridLayout(summary_box)
@@ -82,7 +83,7 @@ class EndSessionDialog(QDialog):
         layout.addWidget(summary_box)
         
         price_box = QFrame()
-        price_box.setStyleSheet("QFrame { background-color: #263238; border-radius: 8px; border: 1px solid #37474F; }")
+        price_box.setStyleSheet("QFrame { background-color: palette(base); border-radius: 8px; border: 1px solid palette(mid); }")
         price_box.setMinimumHeight(100)
         pl = QGridLayout(price_box)
         pl.setContentsMargins(15, 15, 15, 15)
@@ -103,7 +104,7 @@ class EndSessionDialog(QDialog):
         
         note = QLabel("Price calculated based on actual time used.")
         note.setFont(QFont("Arial", 10))
-        note.setStyleSheet("color: #78909C;")
+        note.setStyleSheet(style("text_muted"))
         note.setAlignment(Qt.AlignCenter)
         layout.addWidget(note)
         
@@ -135,11 +136,11 @@ class EndSessionDialog(QDialog):
     
     def _add_row(self, grid, label, value, row):
         l = QLabel(label)
-        l.setStyleSheet("color: #78909C; font-size: 12px;")
+        l.setStyleSheet(style("text_muted", extra="font-size: 12px;"))
         grid.addWidget(l, row, 0)
         
         v = QLabel(str(value))
-        v.setStyleSheet("color: #ECEFF1; font-size: 12px; font-weight: bold;")
+        v.setStyleSheet(style("text_primary", extra="font-size: 12px; font-weight: bold;"))
         grid.addWidget(v, row, 1)
     
     def _on_extend(self):

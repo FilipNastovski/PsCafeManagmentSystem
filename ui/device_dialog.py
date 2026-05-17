@@ -11,6 +11,7 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
 
 from utils.app_path import get_resource_path
+from utils.theme import style
 from db import get_all_devices, create_device, update_device, delete_device
 from db import get_next_device_number, device_name_exists
 
@@ -37,8 +38,8 @@ class DeviceCard(QFrame):
         self.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
         self.setStyleSheet("""
             DeviceCard {
-                background-color: #263238;
-                border: 1px solid #37474f;
+                background-color: palette(base);
+                border: 1px solid palette(mid);
                 border-radius: 8px;
                 padding: 10px;
             }
@@ -51,7 +52,7 @@ class DeviceCard(QFrame):
         name_layout = QHBoxLayout()
         self._name_label = QLabel(self._device['name'])
         self._name_label.setFont(QFont("Arial", 14))
-        self._name_label.setStyleSheet("color: #ffffff;")
+        self._name_label.setStyleSheet("color: palette(text);")
         name_layout.addWidget(self._name_label)
         
         name_layout.addStretch()
@@ -70,7 +71,7 @@ class DeviceCard(QFrame):
         
         price_label = QLabel(f"Rate: {self._device['price_per_hour']} MKD/hour")
         price_label.setFont(QFont("Arial", 11))
-        price_label.setStyleSheet("color: #B0BEC5;")
+        price_label.setStyleSheet(style("text_muted"))
         layout.addWidget(price_label)
         
         button_layout = QHBoxLayout()
@@ -190,6 +191,10 @@ class DeviceEditDialog(QDialog):
                 padding: 8px;
                 font-size: 14px;
                 min-width: 150px;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
+                border-radius: 4px;
             }
         """)
         
@@ -220,6 +225,10 @@ class DeviceEditDialog(QDialog):
                 padding: 8px;
                 font-size: 14px;
                 min-width: 100px;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
+                border-radius: 4px;
             }
         """)
         price_layout.addWidget(self._price_input)
@@ -344,7 +353,7 @@ class DeviceManagerDialog(QDialog):
         font.setBold(True)
         header = QLabel("Devices")
         header.setFont(font)
-        header.setStyleSheet("color: #ECEFF1;")
+        header.setStyleSheet("color: palette(text);")
         layout.addWidget(header)
         
         self._scroll = QScrollArea()
@@ -431,7 +440,7 @@ class DeviceManagerDialog(QDialog):
         if not devices:
             no_devices = QLabel("No devices configured.\nClick '+ Add Device' to add one.")
             no_devices.setFont(QFont("Arial", 13))
-            no_devices.setStyleSheet("color: #78909C; padding: 20px;")
+            no_devices.setStyleSheet(style("text_muted", extra="padding: 20px;"))
             no_devices.setAlignment(Qt.AlignCenter)
             self._device_grid.addWidget(no_devices, 0, 0, 1, 2)
     
