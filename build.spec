@@ -4,6 +4,8 @@ import os
 
 app_name = "PS-Cafe-Manager"
 
+icon_path = 'resources/icon.ico' if sys.platform == 'win32' else None
+
 a = Analysis(
     ['main.py'],
     pathex=[],
@@ -37,7 +39,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='resources/icon.ico',
+    icon=icon_path,
 )
 
 coll = COLLECT(
