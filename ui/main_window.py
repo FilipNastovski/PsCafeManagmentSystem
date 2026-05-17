@@ -15,6 +15,7 @@ from datetime import datetime
 from typing import Dict, Any
 
 from utils.app_path import get_resource_path
+from utils.theme import get_theme_colors, style
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +40,8 @@ class DeviceCard(QFrame):
         self.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
         self.setStyleSheet("""
             DeviceCard {
-                background-color: #263238;
-                border: 2px solid #ddd;
+                background-color: palette(base);
+                border: 2px solid palette(mid);
                 border-radius: 8px;
             }
             DeviceCard[status="available"] {
@@ -51,11 +52,9 @@ class DeviceCard(QFrame):
             }
             DeviceCard[status="overdue"] {
                 border-left: 5px solid #f44336;
-                background-color: #ffebee;
             }
             DeviceCard[status="disabled"] {
                 border-left: 5px solid #9e9e9e;
-                background-color: #eee;
             }
         """)
         
@@ -79,13 +78,13 @@ class DeviceCard(QFrame):
         self._time_label = QLabel("")
         self._time_label.setFont(QFont("Arial", 11))
         self._time_label.setAlignment(Qt.AlignCenter)
-        self._time_label.setStyleSheet("color: #666;")
+        self._time_label.setStyleSheet(style("text_muted"))
         layout.addWidget(self._time_label)
         
         self._price_label = QLabel("")
         self._price_label.setFont(QFont("Arial", 11))
         self._price_label.setAlignment(Qt.AlignCenter)
-        self._price_label.setStyleSheet("color: #666;")
+        self._price_label.setStyleSheet(style("text_muted"))
         layout.addWidget(self._price_label)
         
         self._button_layout = QHBoxLayout()
@@ -106,7 +105,8 @@ class DeviceCard(QFrame):
                 background-color: #45a049;
             }
             QPushButton:disabled {
-                background-color: #ccc;
+                background-color: palette(button);
+                color: palette(text);
             }
         """)
         self._start_button.clicked.connect(self._on_start_clicked)
@@ -128,7 +128,8 @@ class DeviceCard(QFrame):
                 background-color: #da190b;
             }
             QPushButton:disabled {
-                background-color: #ccc;
+                background-color: palette(button);
+                color: palette(text);
             }
         """)
         self._end_button.clicked.connect(self._on_end_clicked)
@@ -150,7 +151,8 @@ class DeviceCard(QFrame):
                 background-color: #f57c00;
             }
             QPushButton:disabled {
-                background-color: #ccc;
+                background-color: palette(button);
+                color: palette(text);
             }
         """)
         self._extend_button.clicked.connect(self._on_extend_clicked)
@@ -163,7 +165,7 @@ class DeviceCard(QFrame):
         font.setBold(True)
         self._overdue_label.setFont(font)
         self._overdue_label.setAlignment(Qt.AlignCenter)
-        self._overdue_label.setStyleSheet("color: #f44336; background-color: #ffcdd2; padding: 4px; border-radius: 4px;")
+        self._overdue_label.setStyleSheet("color: #f44336; padding: 4px; border-radius: 4px;")
         self._overdue_label.setVisible(False)
         layout.addWidget(self._overdue_label)
     
@@ -245,6 +247,8 @@ class DeviceCard(QFrame):
         self.style().unpolish(self)
         self.style().polish(self)
         
+        colors = get_theme_colors()
+        
         if status == 'available':
             self._status_label.setText("Available")
             self._status_label.setStyleSheet("color: #4CAF50; font-weight: bold;")
@@ -256,7 +260,6 @@ class DeviceCard(QFrame):
             self._overdue_label.setVisible(False)
             self._session = None
         elif status == 'in_use':
-            # Get the active session for this device, then fetch its details
             active_session = SessionService.get_active_session_for_device(self._device['id'])
             if active_session:
                 self._session = SessionService.get_session_details(active_session['id'])
@@ -272,6 +275,7 @@ class DeviceCard(QFrame):
                         self._status_label.setText("Overdue!")
                         self._status_label.setStyleSheet("color: #f44336; font-weight: bold;")
                         self._overdue_label.setVisible(True)
+                        self._overdue_label.setStyleSheet(f"color: #f44336; background-color: {colors.bg_overdue_badge}; padding: 4px; border-radius: 4px;")
                         self._extend_button.setVisible(True)
                     else:
                         self._extend_button.setVisible(False)
@@ -311,6 +315,8 @@ class DeviceCard(QFrame):
                         self._status_label.setText("Overdue!")
                         self._status_label.setStyleSheet("color: #f44336; font-weight: bold;")
                         self._overdue_label.setVisible(True)
+                        colors = get_theme_colors()
+                        self._overdue_label.setStyleSheet(f"color: #f44336; background-color: {colors.bg_overdue_badge}; padding: 4px; border-radius: 4px;")
                         self._extend_button.setVisible(True)
                     elif remaining > 0:
                         self._extend_button.setVisible(False)
@@ -364,7 +370,7 @@ class MainWindow(QMainWindow):
         
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
-        scroll.setStyleSheet("QScrollArea { border: none; }")
+        scroll.setStyleSheet("QScrollArea { border: none; background-color: transparent; }")
         
         self._device_container = QWidget()
         self._device_grid = QGridLayout(self._device_container)
@@ -374,12 +380,11 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(scroll)
         
         bottom = QWidget()
-        bottom.setStyleSheet("QWidget { background-color: transparent; }")
         bottom_layout = QHBoxLayout(bottom)
         bottom_layout.setContentsMargins(10, 5, 10, 5)
         self._credits_label = QLabel("PsManagementSystem V-0.1 Filip Nastovski")
         self._credits_label.setFont(QFont("Arial", 9))
-        self._credits_label.setStyleSheet("color: #555;")
+        self._credits_label.setStyleSheet(style("text_credits"))
         bottom_layout.addWidget(self._credits_label)
         bottom_layout.addStretch()
         self._mute_btn = QPushButton("🔊")
@@ -391,7 +396,7 @@ class MainWindow(QMainWindow):
                 font-size: 14px;
             }
             QPushButton:hover {
-                background-color: #ddd;
+                background-color: palette(mid);
                 border-radius: 3px;
             }
         """)
@@ -500,7 +505,7 @@ class MainWindow(QMainWindow):
         
         self._refresh_label = QLabel(f"Last updated: {datetime.now().strftime('%H:%M:%S')}")
         self._refresh_label.setFont(QFont("Arial", 10))
-        self._refresh_label.setStyleSheet("color: #666;")
+        self._refresh_label.setStyleSheet(style("text_muted"))
         layout.addWidget(self._refresh_label)
         
         return summary
@@ -527,7 +532,7 @@ class MainWindow(QMainWindow):
         if not devices:
             no_devices = QLabel("No devices configured. Click 'Manage Devices' to add devices.")
             no_devices.setFont(QFont("Arial", 14))
-            no_devices.setStyleSheet("color: #666; padding: 20px;")
+            no_devices.setStyleSheet(style("text_muted", extra="padding: 20px;"))
             no_devices.setAlignment(Qt.AlignCenter)
             self._device_grid.addWidget(no_devices, 0, 0, 1, 4)
     

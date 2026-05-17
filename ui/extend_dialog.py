@@ -9,6 +9,7 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QFont
 
 from utils.app_path import get_resource_path
+from utils.theme import style
 from services import PricingService, SessionService
 
 MIN_EXTENSION_DURATION = 15
@@ -43,7 +44,7 @@ class ExtendSessionDialog(QDialog):
         
         current_info = QLabel(f"Current end time: {self._session.get('expected_end_time_formatted', 'N/A')}")
         current_info.setFont(QFont("Arial", 12))
-        current_info.setStyleSheet("color: #666;")
+        current_info.setStyleSheet(style("text_muted"))
         current_info.setAlignment(Qt.AlignCenter)
         layout.addWidget(current_info)
         
@@ -60,6 +61,10 @@ class ExtendSessionDialog(QDialog):
             QSpinBox {
                 padding: 5px;
                 font-size: 14px;
+                background-color: palette(base);
+                color: palette(text);
+                border: 1px solid palette(mid);
+                border-radius: 4px;
             }
         """)
         self._duration_spin.valueChanged.connect(self._on_duration_changed)

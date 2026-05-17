@@ -20,8 +20,37 @@ Verify by running the app or tests — there is no linter, typechecker, or CI.
 - **`models/`** — Pure dataclasses + enums (`Device`, `Session`, `DeviceStatus`, `SessionType`, `SessionStatus`). Not used by the DB layer directly (it returns dicts).
 - **`services/`** — Business logic: `SessionService`, `PricingService`, `ReportService`, `AlertService`
 - **`ui/`** — PySide6 widgets: `MainWindow`, `SessionDialog`, `EndSessionDialog`, `ExtendDialog`, `DeviceDialog`, `ReportWindow`
-- **`utils/`** — Path resolution helpers (`app_path.py`) for dev vs packaged mode
+- **`utils/`** — Path resolution helpers (`app_path.py`) for dev vs packaged mode, theme system (`theme.py`) for OS-aware dark/light mode
 - **`resources/`** — `alert.wav` (sound notification), `icon.png`, `icon.ico` (Windows exe icon)
+
+## UI & Theming
+
+The UI uses a theme system that auto-detects OS dark/light mode via `QStyleHints.colorScheme()`.
+
+- **Theme module**: `utils/theme.py` — defines dark/light color tokens, builds QPalette, handles theme switching
+- **Design tokens**: `design.md` — complete color palette, semantic colors, component styles, font conventions
+- **Helper**: `style(text_color, bg_color, border_color, extra)` — builds stylesheet strings with theme-aware colors
+- **Semantic colors**: `SemanticColors` class — accent colors (green=available, red=overdue, etc.) stay the same in both themes
+
+**When adding/modifying UI:**
+1. Read `design.md` for color tokens before writing any styles
+2. Use `style()` helper for text/background colors: `style("text_muted")`, `style("text_primary")`
+3. Use semantic color constants for accent colors: `SemanticColors.ACCENT_GREEN`, `SemanticColors.ACCENT_RED`
+4. Never hardcode hex colors for theme-dependent values (backgrounds, text)
+5. Semantic/accent colors may be hardcoded in stylesheets since they don't change between themes
+
+```python
+from utils.theme import style, get_theme_colors, SemanticColors
+
+# Theme-dependent text
+label.setStyleSheet(style("text_muted"))
+
+# Theme-dependent background
+frame.setStyleSheet(style(bg_color="bg_surface", border_color="border_card", extra="border-radius: 8px;"))
+
+# Semantic accent colors (same in both themes)
+btn.setStyleSheet(f"background-color: {SemanticColors.ACCENT_GREEN}; color: white;")
+```
 
 ## Key Conventions
 
@@ -140,11 +169,12 @@ Update only when you discover something a future agent would likely miss: new co
 1. **Read the relevant files** — use `Read` and `Grep` to understand existing patterns before editing
 2. **Check existing tests** — see how similar features are tested in `tests/`
 3. **Run `pytest`** — confirm the suite is green before you start
+4. **For UI changes** — read `design.md` for color tokens and `utils/theme.py` for the `style()` helper before writing any stylesheets
 
 ### Implementing a Feature
 1. **Write tests first** — add to the relevant `tests/test_*.py` or create a new one
 2. **Run tests** to confirm they fail: `pytest tests/test_your_file.py -v`
-3. **Implement** — follow existing code style, use `get_data_path()` / `get_resource_path()` for file paths
+3. **Implement** — follow existing code style, use `get_data_path()` / `get_resource_path()` for file paths, use `style()` from `utils/theme.py` for UI colors
 4. **Run affected tests**: `pytest tests/test_your_file.py -v`
 5. **Run full suite**: `pytest` — do not skip this
 6. **Update AGENTS.md** if conventions, commands, or gotchas changed

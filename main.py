@@ -10,6 +10,7 @@ from db import init_database, close_connection
 from services import SessionService
 from ui.main_window import MainWindow
 from utils.app_path import get_data_path
+from utils.theme import apply_theme
 
 log_file = get_data_path("pscafe.log")
 logging.basicConfig(
@@ -29,7 +30,7 @@ def setup_application():
     app.setApplicationName("PS Management")
     app.setOrganizationName("PsCafe")
     app.setOrganizationDomain("localhost")
-    app.setStyle("Fusion")
+    apply_theme(app)
     return app
 
 
